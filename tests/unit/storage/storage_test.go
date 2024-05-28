@@ -78,6 +78,6 @@ func TestDownload(t *testing.T) {
 
 	t.Run("Download non existing image", func(t *testing.T) {
 		_, err := storeService.DownloadImage(NonImgURL, make(map[string][]string))
-		assert.Empty(t, err, "expected error")
+		assert.Equal(t, 502, err.Code, "expected error")
 	})
 }
