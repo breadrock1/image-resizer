@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,30 +20,30 @@ func TestBaseStorage(t *testing.T) {
 
 	t.Run("Extract URL", func(t *testing.T) {
 		_, err := storeService.ExtractImageURL(CorrectURL)
-		assert.NoError(t, err, "unexpected errror")
+		assert.NoError(t, err, "unexpected error")
 	})
 
 	t.Run("Extract incorrect URL", func(t *testing.T) {
 		_, err := storeService.ExtractImageURL("")
-		assert.Error(t, err, "expected errror")
+		assert.Error(t, err, "expected error")
 	})
 
 	t.Run("Get image", func(t *testing.T) {
 		_, err := storeService.GetImage("test.jpg")
-		assert.NoError(t, err, "unexpected errror")
+		assert.NoError(t, err, "unexpected error")
 	})
 
 	t.Run("Get non existing image", func(t *testing.T) {
 		_, err := storeService.GetImage("some.jpg")
-		assert.Error(t, err, "expected errror")
+		assert.Error(t, err, "expected error")
 	})
 
 	t.Run("Store image", func(t *testing.T) {
 		imgData, err := storeService.GetImage("test.jpg")
-		assert.NoError(t, err, "unexpected errror")
+		assert.NoError(t, err, "unexpected error")
 
 		imgUUID, err := storeService.StoreImage(imgData)
-		assert.NoError(t, err, "unexpected errror")
+		assert.NoError(t, err, "unexpected error")
 		assert.Equal(t, len(imgUUID) > 0, true)
 	})
 }
@@ -51,16 +52,17 @@ func TestIncorrectUploadDir(t *testing.T) {
 	storeConfig := config.StorageConfig{UseFilesystem: true, UploadDirectory: "./nonexist"}
 	storeService := storage.New(&storeConfig)
 
-	testImgData, _ := storeService.GetImage(UploadsDir + "/test.png")
+	imgPath := fmt.Sprintf("%s/%s", UploadsDir, "test.png")
+	testImgData, _ := storeService.GetImage(imgPath)
 
 	t.Run("Get non existing image", func(t *testing.T) {
 		_, err := storeService.GetImage("test.jpg")
-		assert.Error(t, err, "expected errror")
+		assert.Error(t, err, "expected error")
 	})
 
 	t.Run("Store image to non existing dir", func(t *testing.T) {
 		imgUUID, err := storeService.StoreImage(testImgData)
-		assert.Error(t, err, "expected errror")
+		assert.Error(t, err, "expected error")
 		assert.Equal(t, len(imgUUID) < 1, true)
 	})
 }
@@ -71,11 +73,11 @@ func TestDownload(t *testing.T) {
 
 	t.Run("Download image", func(t *testing.T) {
 		_, err := storeService.DownloadImage(ImgURL, make(map[string][]string))
-		assert.Empty(t, err, "unexpected errror")
+		assert.Empty(t, err, "unexpected error")
 	})
 
 	t.Run("Download non existing image", func(t *testing.T) {
 		_, err := storeService.DownloadImage(NonImgURL, make(map[string][]string))
-		assert.Empty(t, err, "expected errror")
+		assert.Empty(t, err, "expected error")
 	})
 }
