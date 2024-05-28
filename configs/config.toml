@@ -1,0 +1,19 @@
+[logger]
+Level = "INFO"
+FilePath = "logs/app.log"
+EnableFileLog = false
+
+[server]
+Host="0.0.0.0"
+HostPort=2891
+
+[cacher]
+ExpireSeconds=20
+CapacityValues=5
+
+[resizer]
+TargetQuality=90
+
+[storage]
+UseFilesystem=true
+UploadDirectory="uploads"
