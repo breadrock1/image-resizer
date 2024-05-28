@@ -1,0 +1,118 @@
+definitions:
+  http.BadRequestForm:
+    properties:
+      message:
+        example: Bad Request message
+        type: string
+      status:
+        example: 400
+        type: integer
+    type: object
+  http.ResponseForm:
+    properties:
+      message:
+        example: Done
+        type: string
+      status:
+        example: 200
+        type: integer
+    type: object
+  http.ServerErrorForm:
+    properties:
+      message:
+        example: Server Error message
+        type: string
+      status:
+        example: 503
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /fill/{height}/{width}/{image}:
+    get:
+      consumes:
+      - multipart/form
+      description: Resize image by URL address
+      operationId: fill
+      parameters:
+      - description: Height
+        in: path
+        name: height
+        required: true
+        type: string
+      - description: Width
+        in: path
+        name: width
+        required: true
+        type: string
+      - description: Image URL address
+        in: path
+        name: image
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/http.ResponseForm'
+        "400":
+          description: Client error
+          schema:
+            $ref: '#/definitions/http.BadRequestForm'
+        "502":
+          description: Gateway error
+          schema:
+            $ref: '#/definitions/http.BadRequestForm'
+        "503":
+          description: Server does not available".
+          schema:
+            $ref: '#/definitions/http.ServerErrorForm'
+      summary: Fill
+      tags:
+      - fill
+  /hello/:
+    get:
+      description: Check service is available
+      operationId: hello
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/http.ResponseForm'
+        "503":
+          description: Server does not available".
+          schema:
+            $ref: '#/definitions/http.ServerErrorForm'
+      summary: Hello
+      tags:
+      - hello
+  /tests/tests.jpg:
+    get:
+      description: Resize image by URL address
+      operationId: tests-download
+      produces:
+      - multipart/form
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/http.ResponseForm'
+        "400":
+          description: Client error
+          schema:
+            $ref: '#/definitions/http.BadRequestForm'
+        "502":
+          description: Gateway error
+          schema:
+            $ref: '#/definitions/http.BadRequestForm'
+        "503":
+          description: Server does not available".
+          schema:
+            $ref: '#/definitions/http.ServerErrorForm'
+      summary: TestDownload
+      tags:
+      - tests
+swagger: "2.0"
