@@ -1,25 +1,22 @@
-package fs
+package storage
 
 import (
 	"context"
-	"errors"
 	"io"
 	"net/http"
-	"net/url"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/google/uuid"
-	"image-resize-service/internal/config"
-	"image-resize-service/internal/storage/storage_err"
+	"image-resize-service/internal/pkg/config"
 )
 
 type Service struct {
 	uploadDir string
 }
 
-func New(config *config.StorageConfig) Service {
+func Create(config *config.StorageConfig) Service {
 	return Service{
 		uploadDir: config.UploadDirectory,
 	}
@@ -27,6 +24,11 @@ func New(config *config.StorageConfig) Service {
 
 func (s *Service) GetImagePath(imageID string) string {
 	return path.Join(s.uploadDir, imageID)
+}
+
+func (s *Service) GetImageData(imageID string) ([]byte, error) {
+	filePath := path.Join(s.uploadDir, imageID)
+	return os.ReadFile(filePath)
 }
 
 func (s *Service) StoreImage(image []byte) (string, error) {
@@ -38,45 +40,27 @@ func (s *Service) StoreImage(image []byte) (string, error) {
 	return uuidValue.String(), nil
 }
 
-func (s *Service) GetImage(imageID string) ([]byte, error) {
-	filePath := path.Join(s.uploadDir, imageID)
-	return os.ReadFile(filePath)
-}
-
-func (s *Service) ExtractImageURL(address string) (string, error) {
-	if len(address) < 1 {
-		return "", errors.New("empty image URL address")
-	}
-
-	imageURL, err := url.Parse(address)
-	if err != nil {
-		return "", err
-	}
-
-	return imageURL.Path, nil
-}
-
-func (s *Service) DownloadImage(address string, headers http.Header) ([]byte, *storageerr.ErrStorage) {
+func (s *Service) DownloadImage(address string, headers http.Header) ([]byte, *ErrStorage) {
 	client := http.Client{}
 	ctx := context.Background()
 	req, err := http.NewRequestWithContext(ctx, "GET", address, nil)
 	if err != nil {
-		return nil, storageerr.FromError(err)
+		return nil, FromError(err)
 	}
 
 	s.setHeaders(req, headers)
 	response, err := client.Do(req)
 	if err != nil {
-		return nil, storageerr.FromError(err)
+		return nil, FromError(err)
 	}
 
 	if response.StatusCode > 200 {
-		return nil, storageerr.New(response.StatusCode, "not founded")
+		return nil, CreateNew(response.StatusCode, "not founded")
 	}
 
 	buffered, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, storageerr.FromError(err)
+		return nil, FromError(err)
 	}
 	defer func() { _ = response.Body.Close() }()
 

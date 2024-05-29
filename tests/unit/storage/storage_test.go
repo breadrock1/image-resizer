@@ -5,41 +5,32 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"image-resize-service/internal/config"
-	"image-resize-service/internal/storage"
+	"image-resize-service/internal/app/storage"
+	"image-resize-service/internal/pkg/config"
 )
 
-const UploadsDir = "../../../uploads"
-const CorrectURL = "https://images.rawpixel.com/image_png_800/test.png"
-const ImgURL = "https://img.freepik.com/free-psd/mix-fruits-png-isolated-transparent-background_191095-9865.jpg"
-const NonImgURL = "https://images.rawl.com/image_png_800/nBuZw.png"
+const (
+	uploadDirectory     = "../../../uploads"
+	existingImageURL    = "https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg"
+	nonExistingImageURL = "https://images.rawl.com/image_png_800/nBuZw.png"
+)
 
 func TestBaseStorage(t *testing.T) {
-	storeConfig := config.StorageConfig{UseFilesystem: true, UploadDirectory: UploadsDir}
+	storeConfig := config.StorageConfig{UseFilesystem: true, UploadDirectory: uploadDirectory}
 	storeService := storage.New(&storeConfig)
 
-	t.Run("Extract URL", func(t *testing.T) {
-		_, err := storeService.ExtractImageURL(CorrectURL)
-		assert.NoError(t, err, "unexpected error")
-	})
-
-	t.Run("Extract incorrect URL", func(t *testing.T) {
-		_, err := storeService.ExtractImageURL("")
-		assert.Error(t, err, "expected error")
-	})
-
 	t.Run("Get image", func(t *testing.T) {
-		_, err := storeService.GetImage("test.jpg")
+		_, err := storeService.GetImageData("test.jpg")
 		assert.NoError(t, err, "unexpected error")
 	})
 
 	t.Run("Get non existing image", func(t *testing.T) {
-		_, err := storeService.GetImage("some.jpg")
+		_, err := storeService.GetImageData("some.jpg")
 		assert.Error(t, err, "expected error")
 	})
 
 	t.Run("Store image", func(t *testing.T) {
-		imgData, err := storeService.GetImage("test.jpg")
+		imgData, err := storeService.GetImageData("test.jpg")
 		assert.NoError(t, err, "unexpected error")
 
 		imgUUID, err := storeService.StoreImage(imgData)
@@ -52,11 +43,11 @@ func TestIncorrectUploadDir(t *testing.T) {
 	storeConfig := config.StorageConfig{UseFilesystem: true, UploadDirectory: "./nonexist"}
 	storeService := storage.New(&storeConfig)
 
-	imgPath := fmt.Sprintf("%s/%s", UploadsDir, "test.png")
-	testImgData, _ := storeService.GetImage(imgPath)
+	imgPath := fmt.Sprintf("%s/%s", uploadDirectory, "test.png")
+	testImgData, _ := storeService.GetImageData(imgPath)
 
 	t.Run("Get non existing image", func(t *testing.T) {
-		_, err := storeService.GetImage("test.jpg")
+		_, err := storeService.GetImageData("test.jpg")
 		assert.Error(t, err, "expected error")
 	})
 
@@ -68,16 +59,16 @@ func TestIncorrectUploadDir(t *testing.T) {
 }
 
 func TestDownload(t *testing.T) {
-	storeConfig := config.StorageConfig{UseFilesystem: true, UploadDirectory: UploadsDir}
+	storeConfig := config.StorageConfig{UseFilesystem: true, UploadDirectory: uploadDirectory}
 	storeService := storage.New(&storeConfig)
 
 	t.Run("Download image", func(t *testing.T) {
-		_, err := storeService.DownloadImage(ImgURL, make(map[string][]string))
+		_, err := storeService.DownloadImage(existingImageURL, make(map[string][]string))
 		assert.Empty(t, err, "unexpected error")
 	})
 
 	t.Run("Download non existing image", func(t *testing.T) {
-		_, err := storeService.DownloadImage(NonImgURL, make(map[string][]string))
+		_, err := storeService.DownloadImage(nonExistingImageURL, make(map[string][]string))
 		assert.Equal(t, 502, err.Code, "expected error")
 	})
 }

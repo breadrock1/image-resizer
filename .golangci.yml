@@ -6,12 +6,31 @@ linters-settings:
     lines: 150
     statements: 80
 
+  depguard:
+    rules:
+      main:
+        allow:
+          - "github.com/disintegration/imaging"
+          - "github.com/google/uuid"
+          - "github.com/hashicorp/golang-lru/v2/expirable"
+          - "github.com/labstack/echo/v4"
+          - "github.com/labstack/echo/v4/middleware"
+          - "github.com/labstack/gommon/log"
+          - "github.com/spf13/cobra"
+          - "github.com/spf13/viper"
+          - "github.com/swaggo/echo-swagger"
+          - "github.com/stretchr/testify/require"
+
+  revive:
+    rules:
+      - name: blank-imports
+        disabled: true
+
 linters:
   disable-all: true
   enable:
     - asciicheck
     - bodyclose
-    - depguard
     - dogsled
     - dupl
     - durationcheck
@@ -26,7 +45,6 @@ linters:
     - gocyclo
     - godot
     - gofmt
-    - gofumpt
     - goheader
     - gomoddirectives
     - gomodguard

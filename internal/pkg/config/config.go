@@ -7,22 +7,10 @@ import (
 )
 
 type Config struct {
-	Logger  LoggerConfig
 	Server  ServerConfig
-	Cacher  CacheConfig
+	Cache   CacheConfig
 	Storage StorageConfig
 	Resizer ResizerConfig
-}
-
-type LoggerConfig struct {
-	Level         string
-	FilePath      string
-	EnableFileLog bool
-}
-
-type ServerConfig struct {
-	Host     string
-	HostPort int
 }
 
 type CacheConfig struct {
@@ -30,13 +18,18 @@ type CacheConfig struct {
 	CapacityValues int
 }
 
+type ResizerConfig struct {
+	TargetQuality int
+}
+
 type StorageConfig struct {
 	UseFilesystem   bool
 	UploadDirectory string
 }
 
-type ResizerConfig struct {
-	TargetQuality int
+type ServerConfig struct {
+	Host     string
+	HostPort int
 }
 
 func NewConfig(filePath string) (*Config, error) {
@@ -46,8 +39,8 @@ func NewConfig(filePath string) (*Config, error) {
 	viperInstance.AutomaticEnv()
 	viperInstance.SetConfigFile(filePath)
 
-	viperInstance.SetDefault("cacher.ExpireSeconds", 20)
-	viperInstance.SetDefault("cacher.CapacityValues", 5)
+	viperInstance.SetDefault("cache.ExpireSeconds", 20)
+	viperInstance.SetDefault("cache.CapacityValues", 5)
 
 	viperInstance.SetDefault("logger.Level", "INFO")
 	viperInstance.SetDefault("logger.FilePath", "logs/app.log")

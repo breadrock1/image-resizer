@@ -9,19 +9,19 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"image-resize-service/internal/app"
-	"image-resize-service/internal/cacher"
-	"image-resize-service/internal/config"
-	"image-resize-service/internal/logger"
-	"image-resize-service/internal/resizer"
-	httpserv "image-resize-service/internal/server/http"
-	"image-resize-service/internal/storage"
+	"image-resize-service/internal/app/cache"
+	"image-resize-service/internal/app/resizer"
+	"image-resize-service/internal/app/server"
+	"image-resize-service/internal/app/storage"
+	"image-resize-service/internal/pkg/config"
 	"image-resize-service/tests/integration/service"
 )
 
-const MockServerPort = 7453
-const MockServerAddr = "http://localhost:7453/image"
-const ResizerServerAddr = "http://localhost:2891/fill"
+const (
+	MockServerPort    = 7453
+	MockServerAddr    = "http://localhost:7453/image"
+	ResizerServerAddr = "http://localhost:2891/fill"
+)
 
 func TestBaseCases(t *testing.T) {
 	go LaunchResizerService()
@@ -85,17 +85,6 @@ func TestBaseCases(t *testing.T) {
 	})
 }
 
-func SendRequest(address string) (*http.Response, error) {
-	client := http.Client{}
-	ctx := context.Background()
-	req, err := http.NewRequestWithContext(ctx, "GET", address, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return client.Do(req)
-}
-
 func LaunchMockService() {
 	ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
 	defer cancel()
@@ -119,24 +108,33 @@ func LaunchResizerService() {
 		log.Fatalf("Failed while parsing config file: %s", err)
 	}
 
-	sCache := cacher.New(&appConfig.Cacher)
-	sLog := logger.New(&appConfig.Logger)
+	sCache := cache.New(&appConfig.Cache)
 	sRes := resizer.New(&appConfig.Resizer)
 	sStore := storage.New(&appConfig.Storage)
-	sApp := app.New(sCache, sLog, sRes, sStore)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
 	defer cancel()
 
-	server := httpserv.New(&appConfig.Server, sApp)
+	httpServer := server.New(&appConfig.Server, sCache, sRes, sStore)
 	go func() {
-		if err := server.Start(ctx); err != nil {
-			sLog.Error(err.Error())
+		if err := httpServer.Start(ctx); err != nil {
+			log.Println(err.Error())
 			cancel()
 		}
 	}()
 
 	<-ctx.Done()
 	cancel()
-	_ = server.Stop(ctx)
+	_ = httpServer.Stop(ctx)
+}
+
+func SendRequest(address string) (*http.Response, error) {
+	client := http.Client{}
+	ctx := context.Background()
+	req, err := http.NewRequestWithContext(ctx, "GET", address, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return client.Do(req)
 }

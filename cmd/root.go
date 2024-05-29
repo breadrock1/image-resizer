@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"image-resize-service/internal/config"
+	"image-resize-service/internal/pkg/config"
 )
 
 var rootCmd = &cobra.Command{

@@ -1,4 +1,4 @@
-package disimage
+package resizer
 
 import (
 	"bytes"
@@ -6,14 +6,14 @@ import (
 	"image"
 
 	"github.com/disintegration/imaging"
-	"image-resize-service/internal/config"
+	"image-resize-service/internal/pkg/config"
 )
 
 type Service struct {
 	TargetQuality int
 }
 
-func New(config *config.ResizerConfig) Service {
+func CreateResizer(config *config.ResizerConfig) Service {
 	return Service{
 		TargetQuality: config.TargetQuality,
 	}

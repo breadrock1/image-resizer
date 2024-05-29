@@ -1,11 +1,11 @@
-package storageerr
+package storage
 
 type ErrStorage struct {
 	Code    int
 	Message string
 }
 
-func New(code int, msg string) *ErrStorage {
+func CreateNew(code int, msg string) *ErrStorage {
 	return &ErrStorage{
 		Code:    code,
 		Message: msg,

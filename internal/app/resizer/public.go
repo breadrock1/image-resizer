@@ -1,9 +1,6 @@
 package resizer
 
-import (
-	"image-resize-service/internal/config"
-	"image-resize-service/internal/resizer/disimage"
-)
+import "image-resize-service/internal/pkg/config"
 
 type Resizer interface {
 	ResizeService
@@ -14,6 +11,6 @@ type ResizeService interface {
 }
 
 func New(config *config.ResizerConfig) Resizer {
-	resizeService := disimage.New(config)
+	resizeService := CreateResizer(config)
 	return &resizeService
 }

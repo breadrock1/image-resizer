@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"image-resize-service/internal/config"
-	"image-resize-service/internal/resizer"
+	"image-resize-service/internal/app/resizer"
+	"image-resize-service/internal/pkg/config"
 )
 
 func TestResizer(t *testing.T) {

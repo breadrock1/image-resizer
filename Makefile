@@ -19,6 +19,9 @@ build-img:
 run-img: build-img
 	docker run --publish 2891:2891 $(DOCKER_IMG)
 
+run-compose:
+	docker-compose -f deployments/docker-compose.yml up -d resizer
+
 install-lint-deps:
 	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.50.1
 

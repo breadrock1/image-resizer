@@ -6,52 +6,54 @@ import (
 	"time"
 
 	"github.com/magiconair/properties/assert"
-	"image-resize-service/internal/cacher"
-	"image-resize-service/internal/config"
+	"image-resize-service/internal/app/cache"
+	"image-resize-service/internal/pkg/config"
 )
 
-const CapacityValues = 4
-const ExpireSeconds = 3
-const URLAddress = "http://localhost:2891/15/15"
+const (
+	capacityValues = 4
+	expireSeconds  = 3
+	addressURL     = "http://localhost:2891/15/15"
+)
 
-func TestBaseCacher(t *testing.T) {
-	cacherConfig := config.CacheConfig{ExpireSeconds: ExpireSeconds, CapacityValues: CapacityValues}
-	cacherService := cacher.New(&cacherConfig)
+func TestBaseCache(t *testing.T) {
+	cacheConfig := config.CacheConfig{ExpireSeconds: expireSeconds, CapacityValues: capacityValues}
+	cacheService := cache.New(&cacheConfig)
 
 	t.Run("Base functionality", func(t *testing.T) {
-		for i := 0; i <= CapacityValues; i++ {
+		for i := 0; i <= capacityValues; i++ {
 			imgName, urlAddr := buildImageName(i)
-			cacherService.StoreValue(urlAddr, imgName)
+			cacheService.StoreValue(urlAddr, imgName)
 		}
 
 		time.Sleep(2 * time.Second)
 
 		_, firstURLAddr := buildImageName(1)
-		_, exists := cacherService.GetValue(firstURLAddr)
+		_, exists := cacheService.GetValue(firstURLAddr)
 		assert.Equal(t, exists, true)
 	})
 
 	t.Run("Expire elements", func(t *testing.T) {
-		for i := 0; i <= CapacityValues; i++ {
+		for i := 0; i <= capacityValues; i++ {
 			imgName, urlAddr := buildImageName(i)
-			cacherService.StoreValue(urlAddr, imgName)
+			cacheService.StoreValue(urlAddr, imgName)
 		}
 
 		time.Sleep(2 * time.Second)
 
 		_, firstURLAddr := buildImageName(1)
-		_, exists := cacherService.GetValue(firstURLAddr)
+		_, exists := cacheService.GetValue(firstURLAddr)
 		assert.Equal(t, exists, true)
 
 		time.Sleep(4 * time.Second)
 
-		_, exists = cacherService.GetValue(firstURLAddr)
+		_, exists = cacheService.GetValue(firstURLAddr)
 		assert.Equal(t, exists, false)
 	})
 }
 
 func buildImageName(index int) (string, string) {
 	imgName := fmt.Sprintf("test_%d.jpg", index)
-	urlAddr := fmt.Sprintf("%s/%s", URLAddress, imgName)
+	urlAddr := fmt.Sprintf("%s/%s", addressURL, imgName)
 	return imgName, urlAddr
 }

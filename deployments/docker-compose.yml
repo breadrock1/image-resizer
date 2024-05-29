@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  resizer:
+    image: resizer:latest
+    build:
+      context:
+        ..
+      dockerfile:
+        build/Dockerfile
+    ports:
+      - "2891:2891"
+    networks:
+      - resizer-net
+    volumes:
+      - resizer-vol:/opt/resizer/uploads
+
+volumes:
+  resizer-vol:
+
+networks:
+  resizer-net:
