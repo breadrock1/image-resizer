@@ -23,8 +23,6 @@ run-compose:
 	docker-compose -f deployments/docker-compose.yml up -d resizer
 
 install-lint-deps:
-	go get github.com/swaggo/swag/cmd/swag@latest
-	go get -u github.com/swaggo/echo-swagger
 	(which swag > /dev/null) go install github.com/swaggo/swag/cmd/swag@latest
 	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.50.1
 
