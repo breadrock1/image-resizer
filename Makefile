@@ -24,12 +24,14 @@ run-compose:
 
 install-lint-deps:
 	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.50.1
-	go get github.com/swaggo/swag/cmd/swag@latest
-	(which swag > /dev/null) || go install github.com/swaggo/swag/cmd/swag@latest
+	go install github.com/swaggo/swag/cmd/swag@latest
+	go get -u github.com/swaggo/swag/cmd/swag
 	go get -u github.com/swaggo/echo-swagger
+	go get -u github.com/swaggo/http-swagger
+
 
 lint: install-lint-deps
 	golangci-lint run --skip-dirs docs ./...
 
 test:
-	go test -race ./tests/...
+	go test -v -count=1 -race -timeout=1m ./tests/...

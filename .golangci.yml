@@ -1,7 +1,5 @@
 run:
   tests: true
-  sckip-dirs:
-    - "docs"
 
 linters-settings:
   funlen:
@@ -17,7 +15,6 @@ linters-settings:
           - "github.com/hashicorp/golang-lru/v2/expirable"
           - "github.com/labstack/echo/v4"
           - "github.com/labstack/echo/v4/middleware"
-          - "github.com/labstack/gommon/log"
           - "github.com/spf13/cobra"
           - "github.com/spf13/viper"
           - "github.com/swaggo/echo-swagger"
