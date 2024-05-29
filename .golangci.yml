@@ -1,5 +1,7 @@
 run:
   tests: true
+  sckip-dirs:
+    - "docs"
 
 linters-settings:
   funlen:
