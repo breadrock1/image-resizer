@@ -6,7 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/swaggo/echo-swagger"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	_ "image-resize-service/docs"
 	"image-resize-service/internal/app/cache"
 	"image-resize-service/internal/app/resizer"
