@@ -3,7 +3,7 @@ package storage
 import (
 	"net/http"
 
-	"image-resize-service/internal/pkg/config"
+	"image-resize-service/internal/config"
 )
 
 type Storage interface {

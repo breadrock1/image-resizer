@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"image-resize-service/internal/pkg/config"
+	"image-resize-service/internal/config"
 )
 
 type Cache interface {

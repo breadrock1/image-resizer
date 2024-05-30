@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/golang-lru/v2/expirable"
-	"image-resize-service/internal/pkg/config"
+	"image-resize-service/internal/config"
 )
 
 type Memcache struct {

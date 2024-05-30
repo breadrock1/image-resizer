@@ -1,6 +1,8 @@
 package resizer
 
-import "image-resize-service/internal/pkg/config"
+import (
+	"image-resize-service/internal/config"
+)
 
 type Resizer interface {
 	ResizeService

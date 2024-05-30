@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"image-resize-service/internal/app/storage"
-	"image-resize-service/internal/pkg/config"
+	"image-resize-service/internal/config"
+	"image-resize-service/internal/storage"
 )
 
 const (

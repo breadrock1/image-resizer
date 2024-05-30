@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"image-resize-service/internal/app/cache"
-	"image-resize-service/internal/app/resizer"
-	"image-resize-service/internal/app/server"
-	"image-resize-service/internal/app/storage"
-	"image-resize-service/internal/pkg/config"
+	"image-resize-service/internal/cache"
+	"image-resize-service/internal/config"
+	"image-resize-service/internal/resizer"
+	"image-resize-service/internal/server"
+	"image-resize-service/internal/storage"
 	"image-resize-service/tests/integration/service"
 )
 

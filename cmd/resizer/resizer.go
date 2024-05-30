@@ -2,7 +2,7 @@ package main
 
 import (
 	"image-resize-service/cmd"
-	"image-resize-service/internal/pkg/app"
+	"image-resize-service/internal/app"
 )
 
 func main() {

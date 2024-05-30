@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/magiconair/properties/assert"
-	"image-resize-service/internal/app/cache"
-	"image-resize-service/internal/pkg/config"
+	"image-resize-service/internal/cache"
+	"image-resize-service/internal/config"
 )
 
 const (

@@ -6,7 +6,7 @@ import (
 	"image"
 
 	"github.com/disintegration/imaging"
-	"image-resize-service/internal/pkg/config"
+	"image-resize-service/internal/config"
 )
 
 type Service struct {
