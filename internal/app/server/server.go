@@ -6,8 +6,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	//echoSwagger "github.com/swaggo/echo-swagger"
-	//_ "image-resize-service/docs"
 	"image-resize-service/internal/app/cache"
 	"image-resize-service/internal/app/resizer"
 	"image-resize-service/internal/app/storage"
@@ -53,8 +51,6 @@ func (s *Service) InitEndpoints() {
 	s.e.GET("/hello/", s.Hello)
 	s.e.GET("/tests/tests.jpg", s.TestDownload)
 	s.e.GET("/fill/:height/:width/:image", s.Fill, s.LoadFromCache, s.StoreToCache)
-
-	//s.e.GET("/swagger/*", echoSwagger.WrapHandler)
 }
 
 func (s *Service) Start(_ context.Context) error {
